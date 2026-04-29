@@ -1,36 +1,49 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 认识自我 · selfknow.site
 
-## Getting Started
+LeetCode-for-self-knowledge MVP — 通过拖拽答题生成个人画像。
 
-First, run the development server:
+## Stack
+
+Next.js 16 / TypeScript / Tailwind v4 / Drizzle ORM / Neon Postgres / Anthropic Claude (Sonnet 4.6) / @vercel/og / @dnd-kit / Upstash Redis (限流 + KV)
+
+## Setup
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+cp .env.local.example .env.local
+# 填上 DATABASE_URL / ANTHROPIC_API_KEY / KV_REST_API_URL / KV_REST_API_TOKEN / IP_HASH_SALT
+npm run db:push        # 把 schema 推到 Neon
+npm run db:seed        # 灌 seed 数据 (8 类型 + 16 活动)
+npm run dev            # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Useful commands
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- `npm test` — 单元测试 (vitest)
+- `npm run test:e2e` — E2E 测试 (Playwright)
+- `npm run calibrate` — 跑 1000 个合成样本看 8 类分桶分布
+- `npm run db:generate` — 改 schema 后生成迁移
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 字体子集化
 
-## Learn More
+Type card PNG 用思源黑体子集 (~30KB)。改 8 类文案后重跑:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+# 下载 NotoSansSC-Bold.otf 从 https://fonts.google.com/noto/specimen/Noto+Sans+SC
+# 放到 scripts/NotoSansSC-Bold.otf
+pip install fonttools brotli
+python scripts/subset-font.py
+# 产物: public/fonts/noto-sans-sc-subset.woff
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deploy
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Vercel 一键部署。Dashboard 里配:
+- 所有 .env.local 里的环境变量
+- `NEXT_PUBLIC_SITE_URL` 改成 prod 域名
+- Neon Postgres / Upstash Redis 连上 (用 Vercel integrations 自动注入也行)
 
-## Deploy on Vercel
+## Docs
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- [设计稿](docs/superpowers/specs/2026-04-29-self-knowledge-mvp-design.md)
+- [实现计划](docs/superpowers/plans/2026-04-29-self-knowledge-mvp.md)
