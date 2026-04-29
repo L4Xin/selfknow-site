@@ -2,7 +2,15 @@ import Anthropic from '@anthropic-ai/sdk';
 import type { Placement, QuizMeta } from './db/schema';
 import { ACTIVITY_BY_ID } from './activities';
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+// 三种 auth 任选其一:
+//   官方直连:    ANTHROPIC_API_KEY  (sk-ant-...)
+//   代理/中转:   ANTHROPIC_BASE_URL + ANTHROPIC_AUTH_TOKEN (Bearer)
+// SDK 会自动忽略 undefined 字段,优先用 authToken (如果同时设置)
+const client = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY,
+  authToken: process.env.ANTHROPIC_AUTH_TOKEN,
+  baseURL: process.env.ANTHROPIC_BASE_URL,
+});
 
 const SYSTEM_PROMPT = `你是有心理学背景的认知顾问,擅长基于人对活动的态度推测内在画像。
 
