@@ -44,3 +44,7 @@ next-env.d.ts
 
 # brainstorming tool runtime cache
 .superpowers/
+
+# source fonts (subset 后的 woff 入仓,源 OTF/TTF 不入)
+scripts/NotoSansSC-*.otf
+scripts/NotoSansSC-*.ttf

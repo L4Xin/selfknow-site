@@ -37,9 +37,11 @@ CHARS.update(".,;:!?'\"-—()/")
 print(f"Subset: {len(CHARS)} chars")
 print(f"Sample: {''.join(sorted(CHARS)[:30])}...")
 
-src = Path(__file__).parent / "NotoSansSC-Bold.otf"
+src_otf = Path(__file__).parent / "NotoSansSC-Bold.otf"
+src_ttf = Path(__file__).parent / "NotoSansSC-Bold.ttf"
+src = src_otf if src_otf.exists() else src_ttf
 if not src.exists():
-    print(f"ERROR: {src} not found.")
+    print(f"ERROR: neither {src_otf} nor {src_ttf} found.")
     print(f"Download from: https://fonts.google.com/noto/specimen/Noto+Sans+SC")
     sys.exit(1)
 
