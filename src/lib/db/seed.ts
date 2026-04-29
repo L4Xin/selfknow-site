@@ -1,4 +1,3 @@
-import 'dotenv/config';
 import { db } from './client';
 import { activities, typeDefinitions } from './schema';
 import { TYPE_DEFINITIONS } from '../types-data';
