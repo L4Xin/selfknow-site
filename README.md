@@ -38,18 +38,40 @@ python scripts/subset-font.py
 # 产物: public/fonts/noto-sans-sc-subset.woff
 ```
 
-## Deploy (Zeabur)
+## Deploy (Cloudflare Workers)
 
-1. https://zeabur.com → GitHub 登录 → Create Project
-2. Add Service → Git → 选这个 repo,branch `main`
-3. Zeabur 自动识别 Next.js,无需额外配置
-4. Variables tab 加:
-   - `DATABASE_URL` (Neon)
-   - `KV_REST_API_URL` / `KV_REST_API_TOKEN` (Upstash)
-   - `IP_HASH_SALT` (32+ 字符随机串)
-   - `NEXT_PUBLIC_SITE_URL` = 你的部署域名 (Zeabur 给的 `*.zeabur.app` 或自定义)
-5. Networking tab → Generate Domain (拿 `*.zeabur.app` URL),或 Custom Domain 绑自己域名
-6. 改了 `NEXT_PUBLIC_SITE_URL` 必须 Redeploy (前端 bundle 内联值)
+通过 `@opennextjs/cloudflare` 把 Next.js 编译成 Cloudflare Worker + 静态 assets。
+
+### 一次性设置 (本地 CLI 路径)
+
+```bash
+npx wrangler login           # 浏览器授权 Cloudflare 账号
+npm run cf:deploy            # build + deploy 到 Workers
+```
+
+第一次 deploy 完成后,Cloudflare 会给你一个 `<worker-name>.<account>.workers.dev` URL。
+
+### 配 Environment Variables
+
+在 Cloudflare Dashboard → Workers & Pages → 你的 Worker → Settings → Variables:
+- `DATABASE_URL` (Neon)
+- `KV_REST_API_URL` / `KV_REST_API_TOKEN` (Upstash)
+- `IP_HASH_SALT` (32+ 字符随机串)
+- `NEXT_PUBLIC_SITE_URL` = 你的部署域名
+
+> `NEXT_PUBLIC_*` 是 build 时内联到客户端 bundle 的,改了要重 deploy。
+
+### Git 自动部署 (可选)
+
+Dashboard → Workers & Pages → Create → Connect to Git → 选 repo:
+- Build command: `npx opennextjs-cloudflare build`
+- Deploy command: `npx wrangler deploy`
+
+### 关键文件
+
+- `wrangler.jsonc` — Worker 配置 (compatibility flags, assets binding)
+- `open-next.config.ts` — OpenNext build 配置 (默认即可)
+- `public/_headers` — 静态资源缓存策略
 
 ## Docs
 

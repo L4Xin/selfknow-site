@@ -32,7 +32,7 @@ export default function PrivacyPage() {
       </ul>
 
       <h3 className="font-semibold mt-6 mb-2">第三方服务</h3>
-      <p>使用 Zeabur(托管)、Neon(数据库)、Upstash(限流)。这些服务可能会处理你的请求数据,详见各自隐私政策。</p>
+      <p>使用 Cloudflare(托管)、Neon(数据库)、Upstash(限流)。这些服务可能会处理你的请求数据,详见各自隐私政策。</p>
 
       <h3 className="font-semibold mt-6 mb-2">cookie</h3>
       <p>用一个 session cookie 帮你记住自己的画像链接(90 天有效期)。你可以随时清除浏览器 cookie 删除它。</p>
