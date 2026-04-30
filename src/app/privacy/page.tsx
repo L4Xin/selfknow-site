@@ -19,7 +19,6 @@ export default function PrivacyPage() {
       <ul className="list-disc pl-6 space-y-1">
         <li>你拖拽放置的活动 + 坐标(永久,匿名)</li>
         <li>你被分到的 8 类标签(永久,匿名)</li>
-        <li>AI 生成的画像报告文本(90 天后归档)</li>
         <li>访问 IP 的哈希(30 天,仅用于限流防滥用)</li>
         <li>浏览器 UA(30 天,仅用于错误诊断)</li>
         <li>你点击下载/扫码等行为(永久,聚合分析用)</li>
@@ -33,7 +32,7 @@ export default function PrivacyPage() {
       </ul>
 
       <h3 className="font-semibold mt-6 mb-2">第三方服务</h3>
-      <p>使用 Vercel(托管)、Neon(数据库)、Anthropic(AI)、Upstash(限流)。这些服务可能会处理你的请求数据,详见各自隐私政策。</p>
+      <p>使用 Zeabur(托管)、Neon(数据库)、Upstash(限流)。这些服务可能会处理你的请求数据,详见各自隐私政策。</p>
 
       <h3 className="font-semibold mt-6 mb-2">cookie</h3>
       <p>用一个 session cookie 帮你记住自己的画像链接(90 天有效期)。你可以随时清除浏览器 cookie 删除它。</p>
