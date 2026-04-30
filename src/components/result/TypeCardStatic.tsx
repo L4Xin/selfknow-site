@@ -37,7 +37,7 @@ export function TypeCardStatic({ type, qrDataUrl, size }: Props) {
           {type.labelZh}
         </div>
         <div style={{ fontSize: isSquare ? 36 : 26, opacity: 0.85, fontStyle: 'italic' }}>
-          &ldquo;{type.taglineZh}&rdquo;
+          {`“${type.taglineZh}”`}
         </div>
       </div>
 
