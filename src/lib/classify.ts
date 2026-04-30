@@ -1,4 +1,4 @@
-import type { Placement } from './db/schema';
+import type { Placement } from './types';
 import type { TypeId } from './types-data';
 
 function mean(arr: number[]): number {

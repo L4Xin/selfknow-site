@@ -4,7 +4,7 @@ import { useDroppable } from '@dnd-kit/core';
 import { useRef } from 'react';
 import { ActivityBlock } from './ActivityBlock';
 import { ACTIVITY_BY_ID } from '@/lib/activities';
-import type { Placement } from '@/lib/db/schema';
+import type { Placement } from '@/lib/types';
 
 type Props = {
   placements: Placement[];

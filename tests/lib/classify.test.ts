@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import { classify } from '@/lib/classify';
-import type { Placement } from '@/lib/db/schema';
+import type { Placement } from '@/lib/types';
 
 function p(activity_id: string, passion: number, confidence: number): Placement {
-  return { activity_id, passion, confidence, first_placed_at_ms: 0, final_at_ms: 0, move_count: 0 };
+  return { activity_id, passion, confidence };
 }
 
 describe('classify', () => {

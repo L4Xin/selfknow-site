@@ -5,11 +5,10 @@ import type { TypeId } from '@/lib/types-data';
 import { parseUA } from '@/lib/ua';
 
 type Props = {
-  sessionId: string;
   typeId: TypeId;
 };
 
-export function ShareModal({ sessionId, typeId }: Props) {
+export function ShareModal({ typeId }: Props) {
   const [open, setOpen] = useState(false);
   const [size, setSize] = useState<'square' | 'wide'>('square');
   const [needsLongPress, setNeedsLongPress] = useState(false);
@@ -19,29 +18,20 @@ export function ShareModal({ sessionId, typeId }: Props) {
     setNeedsLongPress(ua.needsLongPressHint);
   }, []);
 
-  function track(eventType: string) {
-    fetch('/api/track', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ session_id: sessionId, event_type: eventType }),
-    }).catch(() => {});
-  }
-
   function openShare(s: 'square' | 'wide') {
     setSize(s);
     setOpen(true);
   }
 
   function handleDownload() {
-    track('image_downloaded');
     if (needsLongPress) return;
     const a = document.createElement('a');
-    a.href = `/api/quiz/${sessionId}/image?size=${size}`;
+    a.href = `/cards/${typeId}-${size}.png`;
     a.download = `selfknow-${typeId}-${size}.png`;
     a.click();
   }
 
-  const imgUrl = `/api/quiz/${sessionId}/image?size=${size}`;
+  const imgUrl = `/cards/${typeId}-${size}.png`;
 
   return (
     <>

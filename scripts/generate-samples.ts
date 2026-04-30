@@ -1,4 +1,4 @@
-import type { Placement } from '../src/lib/db/schema';
+import type { Placement } from '../src/lib/types';
 
 // 高斯采样 (Box-Muller)
 function gauss(mean: number, sd: number): number {
@@ -38,9 +38,6 @@ export function generateOneSample(): Placement[] {
     activity_id: `mock-${i}`,
     passion: gauss(chosen.mean.passion, chosen.spread),
     confidence: gauss(chosen.mean.confidence, chosen.spread),
-    first_placed_at_ms: 0,
-    final_at_ms: 0,
-    move_count: 0,
   }));
 }
 

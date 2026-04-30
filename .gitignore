@@ -38,10 +38,8 @@ yarn-error.log*
 # vercel
 .vercel
 
-# cloudflare workers (opennext build output + wrangler types)
-.open-next/
-.wrangler/
-cloudflare-env.d.ts
+# build-time generated type cards (re-built on every deploy)
+/public/cards/
 
 # typescript
 *.tsbuildinfo

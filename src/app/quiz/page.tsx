@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { DndContext, DragEndEvent, MouseSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { ActivityPool } from '@/components/quiz/ActivityPool';
 import { QuadrantBoard } from '@/components/quiz/QuadrantBoard';
-import type { Placement } from '@/lib/db/schema';
+import { classify } from '@/lib/classify';
+import type { Placement } from '@/lib/types';
 
 const MIN_PLACEMENTS = 5;
 const LS_KEY = 'selfknow.draft';
@@ -14,11 +15,7 @@ export default function QuizPage() {
   const router = useRouter();
   const [placements, setPlacements] = useState<Placement[]>([]);
   const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const startTimeRef = useRef<number>(Date.now());
-  const firstActionMsRef = useRef<number | null>(null);
 
-  // 启动时从 localStorage 恢复
   useEffect(() => {
     const saved = localStorage.getItem(LS_KEY);
     if (saved) {
@@ -63,32 +60,14 @@ export default function QuizPage() {
     const confidence = xPct * 2 - 1;
     const passion = (1 - yPct) * 2 - 1;
 
-    const now = Date.now();
-    const tFromStart = now - startTimeRef.current;
-    if (firstActionMsRef.current === null) {
-      firstActionMsRef.current = tFromStart;
-    }
-
     setPlacements(prev => {
       const existing = prev.find(p => p.activity_id === activityId);
       if (existing) {
         return prev.map(p =>
-          p.activity_id === activityId
-            ? { ...p, passion, confidence, final_at_ms: tFromStart, move_count: p.move_count + 1 }
-            : p
+          p.activity_id === activityId ? { ...p, passion, confidence } : p
         );
       }
-      return [
-        ...prev,
-        {
-          activity_id: activityId,
-          passion,
-          confidence,
-          first_placed_at_ms: tFromStart,
-          final_at_ms: tFromStart,
-          move_count: 0,
-        },
-      ];
+      return [...prev, { activity_id: activityId, passion, confidence }];
     });
   }
 
@@ -96,33 +75,11 @@ export default function QuizPage() {
     setPlacements(prev => prev.filter(p => p.activity_id !== activityId));
   }
 
-  async function handleSubmit() {
+  function handleSubmit() {
     setSubmitting(true);
-    setError(null);
-    try {
-      const res = await fetch('/api/quiz/submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          placements,
-          quiz_meta: {
-            duration_ms: Date.now() - startTimeRef.current,
-            first_action_ms: firstActionMsRef.current ?? 0,
-            viewport: { w: window.innerWidth, h: window.innerHeight },
-          },
-        }),
-      });
-      if (!res.ok) {
-        const body = await res.json().catch(() => ({}));
-        throw new Error(body.message || body.error || `HTTP ${res.status}`);
-      }
-      const { id } = await res.json();
-      localStorage.removeItem(LS_KEY);
-      router.push(`/r/${id}`);
-    } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : '提交失败');
-      setSubmitting(false);
-    }
+    const typeId = classify(placements);
+    localStorage.removeItem(LS_KEY);
+    router.push(`/r/${typeId}`);
   }
 
   const placedIds = new Set(placements.map(p => p.activity_id));
@@ -150,7 +107,6 @@ export default function QuizPage() {
           {submitting ? '生成中...' : '提交,看我的画像 →'}
         </button>
       </div>
-      {error && <div className="mt-3 text-red-600 text-sm">{error}</div>}
     </main>
   );
 }

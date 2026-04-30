@@ -2,29 +2,28 @@
 
 LeetCode-for-self-knowledge MVP — 通过拖拽答题生成个人画像。
 
+**纯静态站**:8 类聚类完全在客户端跑(`classify` 是纯函数),16 张类型卡 PNG 在 build 时预生成,无后端、无数据库、无 LLM。可部署到任何静态托管。
+
 ## Stack
 
-Next.js 16 / TypeScript / Tailwind v4 / Drizzle ORM / Neon Postgres / @vercel/og / @dnd-kit / Upstash Redis (限流 + KV)
-
-> 注: `@vercel/og` 是 PNG 渲染库,不绑定 Vercel 平台,任何 Node runtime 都能跑。
+Next.js 16 (static export) / TypeScript / Tailwind v4 / @vercel/og (build 时渲染 PNG) / @dnd-kit / qrcode
 
 ## Setup
 
 ```bash
 npm install
 cp .env.local.example .env.local
-# 填上 DATABASE_URL / KV_REST_API_URL / KV_REST_API_TOKEN / IP_HASH_SALT / NEXT_PUBLIC_SITE_URL
-npm run db:push        # 把 schema 推到 Neon
-npm run db:seed        # 灌 seed 数据 (8 类型 + 16 活动)
-npm run dev            # http://localhost:3000
+# 编辑 .env.local 把 NEXT_PUBLIC_SITE_URL 设成你的部署 URL
+npm run dev               # http://localhost:3000
 ```
 
 ## Useful commands
 
+- `npm run build:cards` — 单独跑 PNG 预生成 (修了类型卡设计后用)
+- `npm run build` — build:cards + next build (产出在 `out/`)
 - `npm test` — 单元测试 (vitest)
 - `npm run test:e2e` — E2E 测试 (Playwright)
 - `npm run calibrate` — 跑 1000 个合成样本看 8 类分桶分布
-- `npm run db:generate` — 改 schema 后生成迁移
 
 ## 字体子集化
 
@@ -38,40 +37,22 @@ python scripts/subset-font.py
 # 产物: public/fonts/noto-sans-sc-subset.woff
 ```
 
-## Deploy (Cloudflare Workers)
+## Deploy (Netlify, 国内可访问)
 
-通过 `@opennextjs/cloudflare` 把 Next.js 编译成 Cloudflare Worker + 静态 assets。
+### 一次性设置
+1. https://app.netlify.com → GitHub 登录
+2. **Add new site** → **Import an existing project** → 选 `L4Xin/selfknow-site` repo
+3. Build 配置:
+   - **Build command**: `npm run build`
+   - **Publish directory**: `out`
+4. **Site configuration → Environment variables** 加 `NEXT_PUBLIC_SITE_URL` = 你的 Netlify URL (`*.netlify.app` 或自定义域名)
+5. **Deploy site**
 
-### 一次性设置 (本地 CLI 路径)
+### 改了 NEXT_PUBLIC_SITE_URL 必须 redeploy
+QR 码是 build 时烧进 PNG 的。改了 URL 要 push 一次 commit 或在 Netlify 控制台 **Trigger deploy**。
 
-```bash
-npx wrangler login           # 浏览器授权 Cloudflare 账号
-npm run cf:deploy            # build + deploy 到 Workers
-```
-
-第一次 deploy 完成后,Cloudflare 会给你一个 `<worker-name>.<account>.workers.dev` URL。
-
-### 配 Environment Variables
-
-在 Cloudflare Dashboard → Workers & Pages → 你的 Worker → Settings → Variables:
-- `DATABASE_URL` (Neon)
-- `KV_REST_API_URL` / `KV_REST_API_TOKEN` (Upstash)
-- `IP_HASH_SALT` (32+ 字符随机串)
-- `NEXT_PUBLIC_SITE_URL` = 你的部署域名
-
-> `NEXT_PUBLIC_*` 是 build 时内联到客户端 bundle 的,改了要重 deploy。
-
-### Git 自动部署 (可选)
-
-Dashboard → Workers & Pages → Create → Connect to Git → 选 repo:
-- Build command: `npx opennextjs-cloudflare build`
-- Deploy command: `npx wrangler deploy`
-
-### 关键文件
-
-- `wrangler.jsonc` — Worker 配置 (compatibility flags, assets binding)
-- `open-next.config.ts` — OpenNext build 配置 (默认即可)
-- `public/_headers` — 静态资源缓存策略
+### 为什么走 Netlify 而不是 Cloudflare/Vercel
+Netlify 的纯静态站 CDN 在中国大陆**实测可用且稳定**(亲测验证),不依赖被 GFW 屏蔽的 `*.workers.dev` / `*.vercel.app`。
 
 ## Docs
 
