@@ -21,19 +21,17 @@ export function classify(placements: Placement[]): TypeId {
   const sx = stddev(confidences);
   const sy = stddev(passions);
 
-  // 散得开 → 多面探索
-  if (sx + sy > 0.55) return 'multi-explorer';
+  // 极度散布 (4 个角各有点) → 多面探索
+  if (sx + sy > 0.7) return 'multi-explorer';
 
-  // 收得紧 → 看主方位
-  if (sx + sy < 0.18) {
-    if (cx > 0.4 && cy > 0.4)   return 'passion-leader';
-    if (cx < -0.4 && cy > 0.4)  return 'hidden-spark';
-    if (cx > 0.4 && cy < -0.4)  return 'comfort-expert';
-    if (cx < -0.4 && cy < -0.4) return 'observer';
-    return 'middle-ground';
-  }
+  // 簇中心落在某个 corner → 直接判定 (不再要求紧簇)
+  // 阈值 0.4 = 板子 70% 那条线 (passion=0.4 ⟹ yPct < 30%, 即上 30%)
+  if (cx > 0.4 && cy > 0.4)   return 'passion-leader';
+  if (cx < -0.4 && cy > 0.4)  return 'hidden-spark';
+  if (cx > 0.4 && cy < -0.4)  return 'comfort-expert';
+  if (cx < -0.4 && cy < -0.4) return 'observer';
 
-  // 中等散布 → 看 y 主导
+  // 簇中心不在 corner → 看 y 主导
   if (cy > 0.4)  return 'passion-neutral';
   if (cy < -0.4) return 'settling-down';
   return 'middle-ground';
