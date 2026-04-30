@@ -3035,7 +3035,9 @@ Dashboard → Add New → Project → Import GitHub repo。
 
 Vercel project → Settings → Environment Variables,加:
 - `DATABASE_URL` (Neon)
-- `ANTHROPIC_API_KEY`
+- Anthropic 凭据(二选一,跟 `.env.local.example` 一致):
+  - **官方直连**: `ANTHROPIC_API_KEY` (`sk-ant-...`)
+  - **代理/中转**: `ANTHROPIC_BASE_URL` + `ANTHROPIC_AUTH_TOKEN` (Bearer token)
 - `KV_REST_API_URL` / `KV_REST_API_TOKEN` (Upstash;或装 Vercel KV integration 自动注入)
 - `IP_HASH_SALT` (32+ 字符随机字符串)
 - `NEXT_PUBLIC_SITE_URL` = `https://selfknow.site` (你的 prod 域名)
