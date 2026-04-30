@@ -32,10 +32,10 @@ export function QuadrantBoard({ placements, onRemove }: Props) {
         <div className="absolute left-1/2 top-0 h-full border-l border-dashed border-stone-300" />
         <div className="absolute top-1/2 left-0 w-full border-t border-dashed border-stone-300" />
         {/* 轴标签 */}
-        <div className="absolute top-1 left-1/2 -translate-x-1/2 text-xs text-stone-500 bg-stone-50 px-2">↑ 高热情</div>
-        <div className="absolute bottom-1 left-1/2 -translate-x-1/2 text-xs text-stone-500 bg-stone-50 px-2">↓ 低热情</div>
-        <div className="absolute left-1 top-1/2 -translate-y-1/2 text-xs text-stone-500 bg-stone-50 px-2 [writing-mode:vertical-rl]">← 低自信</div>
-        <div className="absolute right-1 top-1/2 -translate-y-1/2 text-xs text-stone-500 bg-stone-50 px-2 [writing-mode:vertical-rl]">高自信 →</div>
+        <div className="absolute top-1 left-1/2 -translate-x-1/2 text-xs text-stone-500 bg-stone-50 px-2">高热情</div>
+        <div className="absolute bottom-1 left-1/2 -translate-x-1/2 text-xs text-stone-500 bg-stone-50 px-2">低热情</div>
+        <div className="absolute left-1 top-1/2 -translate-y-1/2 text-xs text-stone-500 bg-stone-50 px-2 [writing-mode:vertical-rl]">低自信</div>
+        <div className="absolute right-1 top-1/2 -translate-y-1/2 text-xs text-stone-500 bg-stone-50 px-2 [writing-mode:vertical-rl]">高自信</div>
 
         {/* 已放置方块 */}
         {placements.map(p => {

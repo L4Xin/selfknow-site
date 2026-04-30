@@ -97,7 +97,7 @@ export default function QuizPage() {
 
       <div className="mt-6 flex items-center justify-between">
         <div className="text-sm text-stone-500">
-          已放 {placements.length} 个 · {canSubmit ? '可提交' : `还差 ${MIN_PLACEMENTS - placements.length} 个`}
+          已放 {placements.length} 个 · {placements.length >= MIN_PLACEMENTS ? '可提交' : `还差 ${MIN_PLACEMENTS - placements.length} 个`}
         </div>
         <button
           onClick={handleSubmit}

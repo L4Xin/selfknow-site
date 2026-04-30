@@ -32,6 +32,7 @@ export function ShareModal({ typeId }: Props) {
   }
 
   const imgUrl = `/cards/${typeId}-${size}.png`;
+  const platformZh = size === 'square' ? '微信' : 'Twitter';
 
   return (
     <>
@@ -40,13 +41,13 @@ export function ShareModal({ typeId }: Props) {
           onClick={() => openShare('square')}
           className="px-4 py-2 bg-stone-900 text-white rounded text-sm hover:bg-stone-700"
         >
-          下载方形 (微信)
+          分享到微信
         </button>
         <button
           onClick={() => openShare('wide')}
           className="px-4 py-2 border border-stone-300 rounded text-sm hover:bg-stone-100"
         >
-          下载宽形 (Twitter)
+          分享到 Twitter
         </button>
       </div>
 
@@ -69,12 +70,12 @@ export function ShareModal({ typeId }: Props) {
             />
             {needsLongPress ? (
               <div className="bg-amber-50 border border-amber-200 text-amber-900 p-3 rounded text-sm text-center">
-                📱 长按图片 → 选择"保存到相册"
+                📱 长按图片 → 选择&ldquo;保存到相册&rdquo;,再到{platformZh}发布
               </div>
             ) : (
               <div className="text-sm text-stone-600 text-center">
-                <p>已开始下载。</p>
-                <p className="mt-1 text-xs text-stone-400">没下载?右键图片"另存为"</p>
+                <p>图片已下载,保存后到{platformZh}发布即可。</p>
+                <p className="mt-1 text-xs text-stone-400">没看到下载?右键图片&ldquo;另存为&rdquo;</p>
               </div>
             )}
             <button
